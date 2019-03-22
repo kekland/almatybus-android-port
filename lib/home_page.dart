@@ -1,7 +1,10 @@
+import 'package:almaty_bus/bus_stop.dart';
+import 'package:almaty_bus/google_maps_flutter/lib/google_maps_flutter.dart';
 import 'package:almaty_bus/minimal_routes_panel.dart';
 import 'package:almaty_bus/routes_panel.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:almaty_bus/api.dart' as api;
+import 'package:flutter/services.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,6 +14,21 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   GoogleMapController controller;
   bool isPanelMinimized = false;
+  String _mapStyle = null;
+
+  Future<String> loadMapStyle() async {
+    return await rootBundle.loadString('assets/maps_style.json');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadMapStyle().then((style) {
+      setState(() {
+        this._mapStyle = style;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +40,7 @@ class _HomePageState extends State<HomePage> {
               target: LatLng(43.222, 76.8512),
               zoom: 11.0,
             ),
+            mapStyle: _mapStyle,
             compassEnabled: true,
             myLocationEnabled: true,
             rotateGesturesEnabled: true,

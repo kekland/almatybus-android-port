@@ -1,3 +1,4 @@
+import 'package:almaty_bus/api.dart' as api;
 import 'package:almaty_bus/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

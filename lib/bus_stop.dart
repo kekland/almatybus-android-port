@@ -1,4 +1,5 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import 'package:almaty_bus/google_maps_flutter/lib/google_maps_flutter.dart';
 
 class BusStop {
   int id;
