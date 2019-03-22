@@ -1,6 +1,6 @@
 import 'package:almaty_bus/bus_stop.dart';
-import 'package:almaty_bus/google_maps_flutter/lib/google_maps_flutter.dart';
 import 'package:almaty_bus/minimal_routes_panel.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:almaty_bus/routes_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:almaty_bus/api.dart' as api;
