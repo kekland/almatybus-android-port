@@ -23,11 +23,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    loadMapStyle().then((style) {
-      setState(() {
-        this._mapStyle = style;
-      });
-    });
   }
 
   @override
@@ -40,7 +35,6 @@ class _HomePageState extends State<HomePage> {
               target: LatLng(43.222, 76.8512),
               zoom: 11.0,
             ),
-            mapStyle: _mapStyle,
             compassEnabled: true,
             myLocationEnabled: true,
             rotateGesturesEnabled: true,
@@ -49,12 +43,22 @@ class _HomePageState extends State<HomePage> {
             tiltGesturesEnabled: false,
             onMapCreated: (controller) {
               this.controller = controller;
-            },
-            onCameraMoveStarted: () {
-              setState(() {
-                isPanelMinimized = true;
+              controller.addListener(() {
+                if (controller.isCameraMoving) {
+                  setState(() {
+                    isPanelMinimized = true;
+                  });
+                }
+              });
+              api.getRouteInfo('86').then((points) {
+                controller.addPolyline(PolylineOptions(
+                  points: points,
+                  color: Colors.cyan.value,
+                ));
               });
             },
+            myLocationButtonEnabled: true,
+            trackCameraPosition: true,
           ),
           Align(
             alignment: Alignment.bottomCenter,

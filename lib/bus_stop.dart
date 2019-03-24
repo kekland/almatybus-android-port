@@ -5,16 +5,14 @@ class BusStop {
   int id;
   String name;
   LatLng point;
-  String additionalInfo;
 
-  BusStop({this.id, this.name, this.point, this.additionalInfo});
+  BusStop({this.id, this.name, this.point});
 
   factory BusStop.fromJson(Map json) {
     return BusStop(
       id: json['Id'],
       name: json['Nm'],
-      point: LatLng(json['Pt']['X'], json['Pt']['Y']),
-      additionalInfo: json['Rn']
+      point: LatLng(json['Pt']['X'], json['Pt']['Y'])
     );
   }
 }
