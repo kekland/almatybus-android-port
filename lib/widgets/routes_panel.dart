@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 class RoutesPanel extends StatefulWidget {
   final bool minimized;
   final Function onPanelTap;
+  final VoidCallback openSelection;
+  final List<Route> routes;
 
-  const RoutesPanel({Key key, this.minimized, this.onPanelTap}) : super(key: key);
+  const RoutesPanel({Key key, this.minimized, this.onPanelTap, this.openSelection, this.routes}) : super(key: key);
   @override
   _RoutesPanelState createState() => _RoutesPanelState();
 }
@@ -56,7 +58,8 @@ class _RoutesPanelState extends State<RoutesPanel> with SingleTickerProviderStat
       color: Theme.of(context).scaffoldBackgroundColor,
       child: InkWell(
         onTap: widget.onPanelTap,
-        onLongPress: () {},
+        borderRadius: BorderRadius.circular(16.0),
+        onLongPress: widget.openSelection,
         child: AnimatedContainer(
           duration: Duration(milliseconds: 750),
           curve: Curves.elasticOut,
