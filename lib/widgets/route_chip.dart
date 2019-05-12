@@ -10,7 +10,7 @@ class RouteChip extends StatelessWidget {
     return Hero(
       tag: 'route_hero_$routeName',
       child: Chip(
-        label: Text(routeName, style: TextStyle(fontWeight: FontWeight.w600)),
+        label: Text(routeName, style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white)),
         backgroundColor: backgroundColor,
         elevation: 0.0,
       ),

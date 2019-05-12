@@ -1,9 +1,7 @@
-import 'package:almaty_bus/bus_stop.dart';
-import 'package:almaty_bus/minimal_routes_panel.dart';
+import 'package:almaty_bus/api/api.dart' as api;
+import 'package:almaty_bus/widgets/routes_panel.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:almaty_bus/routes_panel.dart';
 import 'package:flutter/material.dart';
-import 'package:almaty_bus/api.dart' as api;
 import 'package:flutter/services.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,6 +13,7 @@ class _HomePageState extends State<HomePage> {
   GoogleMapController controller;
   bool isPanelMinimized = false;
   String _mapStyle = null;
+  Set<Polyline> polylines = {};
 
   Future<String> loadMapStyle() async {
     return await rootBundle.loadString('assets/maps_style.json');
@@ -23,6 +22,17 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
+    api.getRouteInfo("36").then((List<LatLng> points) {
+      polylines.add(Polyline(
+        color: Colors.blueGrey,
+        polylineId: PolylineId("137"),
+        points: points,
+        width: 5,
+      ));
+      print("got polyline ${points.length}");
+      setState(() {});
+    });
   }
 
   @override
@@ -43,22 +53,13 @@ class _HomePageState extends State<HomePage> {
             tiltGesturesEnabled: false,
             onMapCreated: (controller) {
               this.controller = controller;
-              controller.addListener(() {
-                if (controller.isCameraMoving) {
-                  setState(() {
-                    isPanelMinimized = true;
-                  });
-                }
-              });
-              api.getRouteInfo('86').then((points) {
-                controller.addPolyline(PolylineOptions(
-                  points: points,
-                  color: Colors.cyan.value,
-                ));
-              });
             },
             myLocationButtonEnabled: true,
-            trackCameraPosition: true,
+            onCameraMoveStarted: () {
+              setState(() => isPanelMinimized = true);
+            },
+
+            polylines: polylines,
           ),
           Align(
             alignment: Alignment.bottomCenter,

@@ -1,4 +1,4 @@
-import 'package:almaty_bus/route_chip.dart';
+import 'package:almaty_bus/widgets/route_chip.dart';
 import 'package:flutter/material.dart';
 
 class MinimalRoutesPanel extends StatelessWidget {
