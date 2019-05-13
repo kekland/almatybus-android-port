@@ -85,16 +85,7 @@ class _RoutesPanelState extends State<RoutesPanel> with SingleTickerProviderStat
                 ),
               ),
               SizedBox(width: double.infinity),
-              Wrap(
-                spacing: 8.0,
-                children: [
-                  RouteChip(routeName: '137', backgroundColor: Colors.green),
-                  RouteChip(routeName: '124', backgroundColor: Colors.orange),
-                  RouteChip(routeName: '70', backgroundColor: Colors.teal),
-                  RouteChip(routeName: '15', backgroundColor: Colors.blue),
-                  RouteChip(routeName: '205', backgroundColor: Colors.amber),
-                ],
-              ),
+              
             ],
           ),
         ),

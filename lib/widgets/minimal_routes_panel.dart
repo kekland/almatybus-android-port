@@ -13,11 +13,7 @@ class MinimalRoutesPanel extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              RouteChip(routeName: '137', backgroundColor: Colors.green),
-              RouteChip(routeName: '124', backgroundColor: Colors.orange),
-              RouteChip(routeName: '70', backgroundColor: Colors.teal),
-              RouteChip(routeName: '15', backgroundColor: Colors.blue),
-              RouteChip(routeName: '205', backgroundColor: Colors.amber),
+              
             ],
           ),
         ),

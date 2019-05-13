@@ -1,10 +1,10 @@
-class Route {
+class BusRoute {
   int id;
   String name;
   RouteType type;
 
-  Route.bus({this.id, this.name, this.type = RouteType.bus});
-  Route.trolley({this.id, this.name, this.type = RouteType.trolley});
+  BusRoute.bus({this.id, this.name, this.type = RouteType.bus});
+  BusRoute.trolley({this.id, this.name, this.type = RouteType.trolley});
 }
 
 enum RouteType {
