@@ -1,4 +1,5 @@
 import 'package:almaty_bus/api/bus_stop.dart';
+import 'package:almaty_bus/api/route.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -37,9 +38,9 @@ Future<List<BusStop>> getBusStops() async {
   return busStops;
 }
 
-Future<List<LatLng>> getRouteInfo(String route) async {
+Future<List<LatLng>> getRouteInfo(BusRoute route) async {
   var response = await http.get(
-    '$baseUrl/Monitoring/GetRouteInfo/$route?_=$getMicroseconds()',
+    '$baseUrl/Monitoring/GetRouteInfo/${route.id}?_=$getMicroseconds()',
     headers: _getHeaders(),
   );
 

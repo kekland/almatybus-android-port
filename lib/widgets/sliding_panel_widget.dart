@@ -1,6 +1,7 @@
 import 'package:almaty_bus/api/route.dart';
 import 'package:almaty_bus/api/routes.dart';
 import 'package:almaty_bus/design/design.dart';
+import 'package:almaty_bus/pages/home_page.dart';
 import 'package:almaty_bus/widgets/route_chip.dart';
 import 'package:almaty_bus/widgets/route_widget.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +68,14 @@ class _SlidingPanelWidgetState extends State<SlidingPanelWidget> {
             Wrap(
               spacing: 8.0,
               children: (selectedRoutes.length > 0)
-                  ? selectedRoutes.map((route) => RouteChip(route: route, backgroundColor: Colors.blue)).toList()
+                  ? selectedRoutes
+                      .map(
+                        (route) => RouteChip(
+                              route: route,
+                              backgroundColor: HomePage.routeColors[selectedRoutes.indexOf(route)],
+                            ),
+                      )
+                      .toList()
                   : [RouteChip(route: BusRoute.bus(id: 0, name: "Пусто"), backgroundColor: Colors.grey.shade300)],
             ),
             DividerWidget(),

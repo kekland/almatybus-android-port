@@ -1,7 +1,9 @@
 import 'package:almaty_bus/api/api.dart' as api;
+import 'package:almaty_bus/api/route.dart';
 import 'package:almaty_bus/design/app_bar_widget.dart';
 import 'package:almaty_bus/design/design.dart';
 import 'package:almaty_bus/design/transparent_route.dart';
+import 'package:almaty_bus/utils.dart';
 import 'package:almaty_bus/widgets/route_chip.dart';
 import 'package:almaty_bus/widgets/routes_panel.dart';
 import 'package:almaty_bus/widgets/routes_selection_widget.dart';
@@ -12,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class HomePage extends StatefulWidget {
+  static List<Color> routeColors = [Colors.purple, Colors.indigo, Colors.blue, Colors.green, Colors.orange];
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -19,27 +22,61 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   GoogleMapController controller;
   bool isPanelMinimized = false;
-  String _mapStyle = null;
   Set<Polyline> polylines = {};
-
-  Future<String> loadMapStyle() async {
-    return await rootBundle.loadString('assets/maps_style.json');
-  }
+  List<BusRoute> selectedRoutes;
 
   @override
   void initState() {
     super.initState();
+  }
 
-    api.getRouteInfo("36").then((List<LatLng> points) {
-      polylines.add(Polyline(
-        color: Colors.blueGrey,
-        polylineId: PolylineId("137"),
-        points: points,
-        width: 5,
-      ));
-      print("got polyline ${points.length}");
+  void onSelectedRoutesUpdated(BuildContext context) async {
+    Set<Polyline> newPolylines = {};
+    List<BusRoute> routesToUpdate = [];
+    List<Color> routesToUpdateCorrespondingColor = [];
+
+    for (int i = 0; i < selectedRoutes.length; i++) {
+      BusRoute selectedRoute = selectedRoutes[i];
+      bool found = false;
+      for (Polyline polyline in polylines) {
+        if (polyline.polylineId.value == selectedRoute.id.toString()) {
+          found = true;
+          newPolylines.add(Polyline(
+            polylineId: polyline.polylineId,
+            color: HomePage.routeColors[i],
+            points: polyline.points,
+            width: 8,
+          ));
+          break;
+        }
+      }
+      if (!found) {
+        routesToUpdate.add(selectedRoute);
+        routesToUpdateCorrespondingColor.add(HomePage.routeColors[i]);
+      }
+    }
+
+    setState(() => polylines = newPolylines);
+
+    if (routesToUpdate.length > 0) {
+      showLoadingDialog(context: context, color: Colors.blue);
+
+      for (int i = 0; i < routesToUpdate.length; i++) {
+        BusRoute route = routesToUpdate[i];
+        List<LatLng> points = await api.getRouteInfo(route);
+
+        polylines.add(Polyline(
+          polylineId: PolylineId(route.id.toString()),
+          color: routesToUpdateCorrespondingColor[i],
+          points: points,
+          width: 8,
+        ));
+      }
+
       setState(() {});
-    });
+
+      Navigator.of(context).pop();
+    }
   }
 
   Widget _buildGoogleMap(BuildContext context) {
@@ -89,8 +126,15 @@ class _HomePageState extends State<HomePage> {
       margin: const EdgeInsets.symmetric(vertical: 32.0, horizontal: 16.0),
       panel: Material(
         type: MaterialType.transparency,
-        child: SlidingPanelWidget(),
+        child: SlidingPanelWidget(
+          onSelectedRoutesChange: (List<BusRoute> selectedRoutes) {
+            setState(() {
+              this.selectedRoutes = selectedRoutes;
+            });
+          },
+        ),
       ),
+      onPanelClosed: () => onSelectedRoutesUpdated(context),
       parallaxEnabled: false,
       parallaxOffset: 0.125,
     );
