@@ -1,3 +1,4 @@
+import 'package:almaty_bus/design/design.dart';
 import 'package:almaty_bus/widgets/route_chip.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,6 @@ class RoutesPanel extends StatefulWidget {
 class _RoutesPanelState extends State<RoutesPanel> with SingleTickerProviderStateMixin {
   bool _textVisible = true;
   bool _minimized = false;
-  bool _paddingMinimized = false;
 
   _close() {
     setState(() {
@@ -78,7 +78,7 @@ class _RoutesPanelState extends State<RoutesPanel> with SingleTickerProviderStat
                     children: <Widget>[
                       Text(
                         'Автобусы',
-                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 24.0),
+                        style: ModernTextTheme.boldTitle,
                       ),
                     ],
                   ),

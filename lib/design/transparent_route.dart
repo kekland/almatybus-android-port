@@ -36,10 +36,10 @@ class TransparentRoute extends PageRoute<void> {
         scopesRoute: true,
         explicitChildNodes: true,
         child: SwipeDetector(
-          onSwipeRight: () => Navigator.of(context).pop(),
+          onSwipeDown: () => Navigator.of(context).pop(),
           child: Container(
             color: Colors.black45,
-            child: result,
+            child: Center(child: result),
           ),
         ),
       ),

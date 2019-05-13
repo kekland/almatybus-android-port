@@ -1,7 +1,7 @@
 import 'package:almaty_bus/design/design.dart';
 import 'package:flutter/material.dart';
 
-class AppBarWidget extends StatelessWidget {
+class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final Widget title;
 
   const AppBarWidget({Key key, this.title}) : super(key: key);
@@ -12,7 +12,7 @@ class AppBarWidget extends StatelessWidget {
       width: double.infinity,
       height: 64.0,
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
+        color: Colors.white,
         boxShadow: [Shadows.slightShadow],
       ),
       alignment: Alignment.center,
@@ -21,6 +21,10 @@ class AppBarWidget extends StatelessWidget {
         child: title,
       ),
     );
+  }
+
+  Size get preferredSize {
+    return new Size.fromHeight(64.0);
   }
 }
 
