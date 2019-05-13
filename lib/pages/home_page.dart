@@ -61,21 +61,26 @@ class _HomePageState extends State<HomePage> {
     if (routesToUpdate.length > 0) {
       showLoadingDialog(context: context, color: Colors.blue);
 
+      int finished = 0;
+
       for (int i = 0; i < routesToUpdate.length; i++) {
         BusRoute route = routesToUpdate[i];
-        List<LatLng> points = await api.getRouteInfo(route);
+        api.getRouteInfo(route).then((points) {
+          finished++;
+          if (finished == routesToUpdate.length) {
+            setState(() {});
 
-        polylines.add(Polyline(
-          polylineId: PolylineId(route.id.toString()),
-          color: routesToUpdateCorrespondingColor[i],
-          points: points,
-          width: 8,
-        ));
+            Navigator.of(context).pop();
+          }
+
+          polylines.add(Polyline(
+            polylineId: PolylineId(route.id.toString()),
+            color: routesToUpdateCorrespondingColor[i],
+            points: points,
+            width: 8,
+          ));
+        });
       }
-
-      setState(() {});
-
-      Navigator.of(context).pop();
     }
   }
 

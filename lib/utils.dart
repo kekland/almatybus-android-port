@@ -1,6 +1,7 @@
 
 import 'package:almaty_bus/design/circular_progress_reveal_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void showLoadingDialog({BuildContext context, Color color}) {
   showDialog(
@@ -18,4 +19,12 @@ void showLoadingDialog({BuildContext context, Color color}) {
       return Center(child: CircularProgressRevealWidget(color: color));
     },
   );
+}
+
+class SharedPreferencesManager {
+  static SharedPreferences instance;
+
+  static initialize() async {
+    instance = await SharedPreferences.getInstance();
+  }
 }

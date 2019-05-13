@@ -26,6 +26,7 @@ dependencies:
   google_maps_flutter:
   swipedetector:
   http:
+  shared_preferences:
   sliding_up_panel: 
   flutter_staggered_grid_view:
   geolocator:
