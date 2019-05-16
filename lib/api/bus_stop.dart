@@ -12,7 +12,7 @@ class BusStop {
     return BusStop(
       id: json['Id'],
       name: json['Nm'],
-      point: LatLng(json['Pt']['X'], json['Pt']['Y'])
+      point: LatLng(json['Pt']['Y'], json['Pt']['X'])
     );
   }
 }

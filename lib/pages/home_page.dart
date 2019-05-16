@@ -1,84 +1,116 @@
 import 'package:almaty_bus/api/api.dart' as api;
+import 'package:almaty_bus/api/bus_route_data.dart';
 import 'package:almaty_bus/api/route.dart';
 import 'package:almaty_bus/design/app_bar_widget.dart';
 import 'package:almaty_bus/design/design.dart';
-import 'package:almaty_bus/design/transparent_route.dart';
 import 'package:almaty_bus/utils.dart';
-import 'package:almaty_bus/widgets/route_chip.dart';
-import 'package:almaty_bus/widgets/routes_panel.dart';
-import 'package:almaty_bus/widgets/routes_selection_widget.dart';
 import 'package:almaty_bus/widgets/sliding_panel_widget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class HomePage extends StatefulWidget {
   static List<Color> routeColors = [Colors.purple, Colors.indigo, Colors.blue, Colors.green, Colors.orange];
+  static List<Color> stopColors = [Colors.purple.shade600, Colors.indigo.shade600, Colors.blue.shade600, Colors.green.shade600, Colors.orange.shade600];
+
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   GoogleMapController controller;
-  bool isPanelMinimized = false;
-  Set<Polyline> polylines = {};
   List<BusRoute> selectedRoutes;
+  List<BusRouteData> selectedRoutesData;
 
   @override
   void initState() {
     super.initState();
+    selectedRoutesData = [];
+    selectedRoutes = [];
   }
 
-  void onSelectedRoutesUpdated(BuildContext context) async {
-    Set<Polyline> newPolylines = {};
-    List<BusRoute> routesToUpdate = [];
-    List<Color> routesToUpdateCorrespondingColor = [];
+  Set<Polyline> getPolylines() {
+    Set<Polyline> polylines = {};
 
-    for (int i = 0; i < selectedRoutes.length; i++) {
-      BusRoute selectedRoute = selectedRoutes[i];
-      bool found = false;
-      for (Polyline polyline in polylines) {
-        if (polyline.polylineId.value == selectedRoute.id.toString()) {
-          found = true;
-          newPolylines.add(Polyline(
-            polylineId: polyline.polylineId,
-            color: HomePage.routeColors[i],
-            points: polyline.points,
-            width: 8,
-          ));
-          break;
-        }
-      }
-      if (!found) {
-        routesToUpdate.add(selectedRoute);
-        routesToUpdateCorrespondingColor.add(HomePage.routeColors[i]);
+    for (BusRouteData routeData in selectedRoutesData) {
+      if (routeData.attachedPolyline != null) {
+        polylines.add(routeData.attachedPolyline);
       }
     }
 
-    setState(() => polylines = newPolylines);
+    return polylines;
+  }
 
-    if (routesToUpdate.length > 0) {
+  Set<Circle> getCircles() {
+    Set<Circle> circles = {};
+
+    for (BusRouteData routeData in selectedRoutesData) {
+      if (routeData.attachedPolyline != null) {
+        circles.addAll(routeData.stops.map((stop) {
+          return Circle(
+            circleId: CircleId("route_${routeData.route.id}_circle_${stop.id}"),
+            center: stop.point,
+            fillColor: Colors.white,
+            radius: 8.0,
+            visible: true,
+            zIndex: 100,
+            strokeColor: routeData.predefinedStopColor,
+            strokeWidth: 12,
+          );
+        }));
+      }
+    }
+
+    print(circles.length);
+
+    return circles;
+  }
+
+  void onSelectedRoutesUpdated(BuildContext context) async {
+    List<BusRouteData> newSelectedRoutesData = [];
+
+    int countToLoad = 0;
+    for (int i = 0; i < selectedRoutes.length; i++) {
+      BusRoute selectedRoute = selectedRoutes[i];
+      BusRouteData selectedRouteData =
+          BusRouteData.empty(route: selectedRoute, predefinedColor: HomePage.routeColors[i], predefinedStopColor: HomePage.stopColors[i]);
+      bool found = false;
+
+      for (BusRouteData data in selectedRoutesData) {
+        if (data == selectedRouteData) {
+          selectedRouteData.points = data.points;
+          selectedRouteData.stops = data.stops;
+          selectedRouteData.attachedPolyline = data.attachedPolyline;
+          found = true;
+        }
+      }
+
+      newSelectedRoutesData.add(selectedRouteData);
+      if (!found) {
+        countToLoad++;
+      }
+    }
+
+    setState(() => selectedRoutesData = newSelectedRoutesData);
+
+    if (countToLoad > 0) {
       showLoadingDialog(context: context, color: Colors.blue);
 
       int finished = 0;
 
-      for (int i = 0; i < routesToUpdate.length; i++) {
-        BusRoute route = routesToUpdate[i];
-        api.getRouteInfo(route).then((points) {
+      for (int i = 0; i < newSelectedRoutesData.length; i++) {
+        BusRouteData routeData = newSelectedRoutesData[i];
+        api.getRouteInfo(routeData.route).then((BusRouteData newData) {
           finished++;
-          if (finished == routesToUpdate.length) {
-            setState(() {});
 
+          routeData.points = newData.points;
+          routeData.stops = newData.stops;
+          routeData.createPolyline();
+
+          if (finished == countToLoad) {
+            setState(() => selectedRoutesData = newSelectedRoutesData);
             Navigator.of(context).pop();
           }
-
-          polylines.add(Polyline(
-            polylineId: PolylineId(route.id.toString()),
-            color: routesToUpdateCorrespondingColor[i],
-            points: points,
-            width: 8,
-          ));
         });
       }
     }
@@ -108,10 +140,8 @@ class _HomePageState extends State<HomePage> {
                 this.controller = controller;
               },
               myLocationButtonEnabled: true,
-              onCameraMoveStarted: () {
-                setState(() => isPanelMinimized = true);
-              },
-              polylines: polylines,
+              polylines: getPolylines(),
+              circles: getCircles(),
             ),
           ),
         ),

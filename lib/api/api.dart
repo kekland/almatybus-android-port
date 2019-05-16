@@ -1,3 +1,4 @@
+import 'package:almaty_bus/api/bus_route_data.dart';
 import 'package:almaty_bus/api/bus_stop.dart';
 import 'package:almaty_bus/api/route.dart';
 import 'package:almaty_bus/utils.dart';
@@ -39,8 +40,8 @@ Future<List<BusStop>> getBusStops() async {
   return busStops;
 }
 
-Future<List<LatLng>> getRouteInfo(BusRoute route) async {
-  bool isCached = SharedPreferencesManager.instance.getBool("route.${route.id}.isCached");
+Future<BusRouteData> getRouteInfo(BusRoute route) async {
+  bool isCached = false; //SharedPreferencesManager.instance.getBool("route.${route.id}.isCached") ?? false;
   List pointsJson;
   List stopsJson;
 
@@ -66,5 +67,5 @@ Future<List<LatLng>> getRouteInfo(BusRoute route) async {
   List<BusStop> busStops = stopsJson.map((stop) => BusStop.fromJson(stop)).toList();
   List<LatLng> points = pointsJson.map((point) => LatLng(point['Y'], point['X'])).toList();
 
-  return points;
+  return BusRouteData.loaded(points: points, stops: busStops, route: route);
 }
