@@ -10,8 +10,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  ThemeData darkTheme = ThemeData(primarySwatch: Colors.blueGrey, brightness: Brightness.dark);
-  ThemeData lightTheme = ThemeData();
+  final ThemeData darkTheme = ThemeData(primarySwatch: Colors.blueGrey, brightness: Brightness.dark);
+  final ThemeData lightTheme = ThemeData();
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(

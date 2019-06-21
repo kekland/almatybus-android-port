@@ -27,6 +27,7 @@ dependencies:
   swipedetector:
   http:
   shared_preferences:
+  location_permissions:
   sliding_up_panel: 
   flutter_staggered_grid_view: ^0.3.0
   geolocator:

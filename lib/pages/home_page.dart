@@ -37,6 +37,7 @@ class _HomePageState extends State<HomePage> {
   List<BusRouteData> selectedRoutesData;
   List<List<Bus>> busesForRoutes;
   List<BitmapDescriptor> busDescriptors = [];
+  bool locationPermissionLoaded = false;
   @override
   void initState() {
     super.initState();
@@ -45,6 +46,11 @@ class _HomePageState extends State<HomePage> {
     busesForRoutes = [];
     loadBusDescriptor();
     busUpdateLoop();
+    checkForLocationPermission().then((_) {
+      setState(() {
+        locationPermissionLoaded = true;
+      });
+    });
   }
 
   loadBusDescriptor() async {
@@ -210,7 +216,7 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               AppBarWidget(title: Text('Алматы.Автобус')),
               Expanded(
-                child: GoogleMap(
+                child: (locationPermissionLoaded)? GoogleMap(
                   initialCameraPosition: CameraPosition(
                     target: LatLng(43.222, 76.8512),
                     zoom: 11.0,
@@ -230,7 +236,7 @@ class _HomePageState extends State<HomePage> {
                   polylines: getPolylines(),
                   circles: getCircles(),
                   markers: getMarkers(),
-                ),
+                ) : SizedBox(),
               ),
             ],
           ),
