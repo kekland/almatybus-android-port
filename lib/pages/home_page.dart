@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
           rotation: bus.orientation,
           position: bus.position,
           markerId: MarkerId('bus_${bus.id}'),
-          icon: busDescriptor,
+          icon: busDescriptors[0],
           anchor: Offset(0.5, 0.5),
         ),
       );
