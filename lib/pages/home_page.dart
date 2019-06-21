@@ -1,5 +1,6 @@
 import 'package:almaty_bus/api/api.dart' as api;
 import 'package:almaty_bus/api/bus_route_data.dart';
+import 'package:almaty_bus/api/map_style.dart';
 import 'package:almaty_bus/api/route.dart';
 import 'package:almaty_bus/design/app_bar_widget.dart';
 import 'package:almaty_bus/design/design.dart';
@@ -10,8 +11,20 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  static List<Color> routeColors = [Colors.purple, Colors.indigo, Colors.blue, Colors.green, Colors.orange];
-  static List<Color> stopColors = [Colors.purple.shade600, Colors.indigo.shade600, Colors.blue.shade600, Colors.green.shade600, Colors.orange.shade600];
+  static List<Color> routeColors = [
+    Colors.purple,
+    Colors.indigo,
+    Colors.blue,
+    Colors.green,
+    Colors.orange
+  ];
+  static List<Color> stopColors = [
+    Colors.purple.shade600,
+    Colors.indigo.shade600,
+    Colors.blue.shade600,
+    Colors.green.shade600,
+    Colors.orange.shade600
+  ];
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -72,8 +85,10 @@ class _HomePageState extends State<HomePage> {
     int countToLoad = 0;
     for (int i = 0; i < selectedRoutes.length; i++) {
       BusRoute selectedRoute = selectedRoutes[i];
-      BusRouteData selectedRouteData =
-          BusRouteData.empty(route: selectedRoute, predefinedColor: HomePage.routeColors[i], predefinedStopColor: HomePage.stopColors[i]);
+      BusRouteData selectedRouteData = BusRouteData.empty(
+          route: selectedRoute,
+          predefinedColor: HomePage.routeColors[i],
+          predefinedStopColor: HomePage.stopColors[i]);
       bool found = false;
 
       for (BusRouteData data in selectedRoutesData) {
@@ -138,6 +153,8 @@ class _HomePageState extends State<HomePage> {
               tiltGesturesEnabled: false,
               onMapCreated: (controller) {
                 this.controller = controller;
+
+                controller.setMapStyle(mapStyle);
               },
               myLocationButtonEnabled: true,
               polylines: getPolylines(),
