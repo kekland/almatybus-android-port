@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
   List<BusRoute> selectedRoutes;
   List<BusRouteData> selectedRoutesData;
   List<Bus> buses;
-  BitmapDescriptor busDescriptor;
+  List<BitmapDescriptor> busDescriptors = [];
   @override
   void initState() {
     super.initState();
@@ -47,12 +47,38 @@ class _HomePageState extends State<HomePage> {
   }
 
   loadBusDescriptor() async {
-    busDescriptor = await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(
-        size: Size(16.0, 16.0),
+    busDescriptors = [
+      await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(
+          size: Size(16.0, 16.0),
+        ),
+        'assets/icons/bus_icon_purple.png',
       ),
-      'assets/icons/bus_icon_purple.png',
-    );
+      await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(
+          size: Size(16.0, 16.0),
+        ),
+        'assets/icons/bus_icon_indigo.png',
+      ),
+      await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(
+          size: Size(16.0, 16.0),
+        ),
+        'assets/icons/bus_icon_blue.png',
+      ),
+      await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(
+          size: Size(16.0, 16.0),
+        ),
+        'assets/icons/bus_icon_green.png',
+      ),
+      await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(
+          size: Size(16.0, 16.0),
+        ),
+        'assets/icons/bus_icon_orange.png',
+      ),
+    ];
   }
 
   Set<Polyline> getPolylines() {
