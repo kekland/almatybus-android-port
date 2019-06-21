@@ -10,10 +10,12 @@ class RouteWidget extends StatelessWidget {
   const RouteWidget({Key key, this.isActive, this.onTap, this.route}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 150),
+      curve: Curves.easeInOut,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16.0),
-        color: (isActive)? Colors.blue : Colors.grey.shade200,
+        color: (isActive)? Colors.blue : Colors.grey.shade900,
       ),
       child: Material(
         type: MaterialType.transparency,
@@ -26,11 +28,11 @@ class RouteWidget extends StatelessWidget {
               children: <Widget>[
                 Text(
                   route.type == RouteType.bus ? "Автобус" : "Троллейбус",
-                  style: ModernTextTheme.caption.copyWith(color: (isActive)? Colors.white54 : Colors.black26),
+                  style: ModernTextTheme.caption.copyWith(color: Colors.white54),
                 ),
                 Text(
                   route.name,
-                  style: ModernTextTheme.primaryAccented.copyWith(color: (isActive)? Colors.white : Colors.black54),
+                  style: ModernTextTheme.primaryAccented.copyWith(color: Colors.white),
                 ),
               ],
             ),

@@ -10,7 +10,7 @@ class CircularProgressRevealWidget extends StatelessWidget {
       width: 64.0,
       height: 64.0,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.black,
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(

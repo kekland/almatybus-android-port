@@ -12,12 +12,12 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       width: double.infinity,
       height: 64.0,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.black,
         boxShadow: [Shadows.slightShadow],
       ),
       alignment: Alignment.center,
       child: DefaultTextStyle.merge(
-        style: ModernTextTheme.boldTitle,
+        style: ModernTextTheme.boldTitle.copyWith(color: Colors.white),
         child: title,
       ),
     );

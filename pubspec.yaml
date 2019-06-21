@@ -28,7 +28,7 @@ dependencies:
   http:
   shared_preferences:
   sliding_up_panel: 
-  flutter_staggered_grid_view:
+  flutter_staggered_grid_view: ^0.3.0
   geolocator:
 
 dev_dependencies:
@@ -50,6 +50,9 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
    - assets/maps_style.json
+   - assets/icons/bus_icon.png
+   - assets/icons/2.0x/bus_icon.png
+   - assets/icons/3.0x/bus_icon.png
   # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

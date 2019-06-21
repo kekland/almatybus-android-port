@@ -58,13 +58,13 @@ class _SlidingPanelWidgetState extends State<SlidingPanelWidget> {
                 width: 24.0,
                 height: 4.0,
                 decoration: BoxDecoration(
-                  color: Colors.black12,
+                  color: Colors.white12,
                   borderRadius: BorderRadius.circular(4.0),
                 ),
               ),
             ),
             SizedBox(height: 16.0),
-            Text('Автобусы', style: ModernTextTheme.boldTitle),
+            Text('Маршруты', style: ModernTextTheme.boldTitle.copyWith(color: Colors.white)),
             Wrap(
               spacing: 8.0,
               children: (selectedRoutes.length > 0)
@@ -76,7 +76,7 @@ class _SlidingPanelWidgetState extends State<SlidingPanelWidget> {
                             ),
                       )
                       .toList()
-                  : [RouteChip(route: BusRoute.bus(id: 0, name: "Пусто"), backgroundColor: Colors.grey.shade300)],
+                  : [RouteChip(route: BusRoute.bus(id: 0, name: "Пусто"), backgroundColor: Colors.grey.shade700)],
             ),
             DividerWidget(),
             TextField(
@@ -90,11 +90,11 @@ class _SlidingPanelWidgetState extends State<SlidingPanelWidget> {
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16.0),
-                  borderSide: BorderSide(color: Colors.black12, width: 2.0),
+                  borderSide: BorderSide(color: Colors.white12, width: 2.0),
                 ),
                 prefixIcon: Icon(Icons.search),
                 hintText: "Поиск",
-                hintStyle: ModernTextTheme.caption,
+                hintStyle: ModernTextTheme.caption.copyWith(color: Colors.white30),
               ),
             ),
             SizedBox(height: 16.0),

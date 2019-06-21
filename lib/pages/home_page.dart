@@ -1,4 +1,5 @@
 import 'package:almaty_bus/api/api.dart' as api;
+import 'package:almaty_bus/api/bus.dart';
 import 'package:almaty_bus/api/bus_route_data.dart';
 import 'package:almaty_bus/api/map_style.dart';
 import 'package:almaty_bus/api/route.dart';
@@ -34,12 +35,14 @@ class _HomePageState extends State<HomePage> {
   GoogleMapController controller;
   List<BusRoute> selectedRoutes;
   List<BusRouteData> selectedRoutesData;
+  List<Bus> buses;
 
   @override
   void initState() {
     super.initState();
     selectedRoutesData = [];
     selectedRoutes = [];
+    buses = [];
   }
 
   Set<Polyline> getPolylines() {
@@ -52,6 +55,23 @@ class _HomePageState extends State<HomePage> {
     }
 
     return polylines;
+  }
+
+  Set<Marker> getMarkers() {
+    Set<Marker> markers = {};
+
+    for (Bus bus in buses) {
+      markers.add(
+        Marker(
+          rotation: bus.orientation,
+          position: bus.position,
+          markerId: MarkerId('bus_${bus.id}'),
+          icon: BitmapDescriptor.fromBytes(byteData)
+        ),
+      );
+    }
+
+    return markers;
   }
 
   Set<Circle> getCircles() {
@@ -107,6 +127,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     setState(() => selectedRoutesData = newSelectedRoutesData);
+    updateBuses();
 
     if (countToLoad > 0) {
       showLoadingDialog(context: context, color: Colors.blue);
@@ -134,42 +155,61 @@ class _HomePageState extends State<HomePage> {
   Widget _buildGoogleMap(BuildContext context) {
     return Container(
       color: Colors.white,
-      child: SafeArea(
-        child: Scaffold(
-          appBar: AppBarWidget(title: Text('Алматы.Автобус')),
-          body: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height - 64.0,
-            child: GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: LatLng(43.222, 76.8512),
-                zoom: 11.0,
-              ),
-              compassEnabled: true,
-              myLocationEnabled: true,
-              rotateGesturesEnabled: true,
-              scrollGesturesEnabled: true,
-              zoomGesturesEnabled: true,
-              tiltGesturesEnabled: false,
-              onMapCreated: (controller) {
-                this.controller = controller;
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Colors.black,
+        body: SafeArea(
+          child: Column(
+            children: <Widget>[
+              AppBarWidget(title: Text('Алматы.Автобус')),
+              Expanded(
+                child: GoogleMap(
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(43.222, 76.8512),
+                    zoom: 11.0,
+                  ),
+                  compassEnabled: true,
+                  myLocationEnabled: true,
+                  rotateGesturesEnabled: true,
+                  scrollGesturesEnabled: true,
+                  zoomGesturesEnabled: true,
+                  tiltGesturesEnabled: false,
+                  onMapCreated: (controller) {
+                    this.controller = controller;
 
-                controller.setMapStyle(mapStyle);
-              },
-              myLocationButtonEnabled: true,
-              polylines: getPolylines(),
-              circles: getCircles(),
-            ),
+                    controller.setMapStyle(mapStyle);
+                  },
+                  myLocationButtonEnabled: true,
+                  polylines: getPolylines(),
+                  circles: getCircles(),
+                  markers: getMarkers(),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
+  void updateBuses() async {
+    try {
+      var updatedBuses =
+          await api.getBusUpdates(route: this.selectedRoutes.first);
+      print('skrrrrrr');
+      print(buses.length);
+      buses = updatedBuses;
+      setState(() {});
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SlidingUpPanel(
       backdropEnabled: true,
+      color: Colors.black,
       borderRadius: BorderRadius.circular(16.0),
       body: _buildGoogleMap(context),
       boxShadow: [Shadows.heavyShadow],
