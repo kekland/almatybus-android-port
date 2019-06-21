@@ -36,13 +36,17 @@ class _HomePageState extends State<HomePage> {
   List<BusRoute> selectedRoutes;
   List<BusRouteData> selectedRoutesData;
   List<Bus> buses;
-
+  BitmapDescriptor busDescriptor;
   @override
   void initState() {
     super.initState();
     selectedRoutesData = [];
     selectedRoutes = [];
     buses = [];
+  }
+
+  loadBusDescriptor() async {
+    busDescriptor = await BitmapDescriptor.fromAssetImage(ImageConfiguration(), 'assets/icons/bus_icon.png');
   }
 
   Set<Polyline> getPolylines() {
@@ -66,13 +70,13 @@ class _HomePageState extends State<HomePage> {
           rotation: bus.orientation,
           position: bus.position,
           markerId: MarkerId('bus_${bus.id}'),
-          icon: BitmapDescriptor.fromBytes(byteData)
+          icon: busDescriptor,
         ),
       );
     }
 
     return markers;
-  }
+  } 
 
   Set<Circle> getCircles() {
     Set<Circle> circles = {};
