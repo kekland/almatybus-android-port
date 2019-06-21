@@ -154,6 +154,7 @@ class _HomePageState extends State<HomePage> {
         if (data == selectedRouteData) {
           selectedRouteData.points = data.points;
           selectedRouteData.stops = data.stops;
+          selectedRouteData.buses = data.buses;
           selectedRouteData.attachedPolyline = data.attachedPolyline;
           found = true;
         }
@@ -179,6 +180,7 @@ class _HomePageState extends State<HomePage> {
 
           routeData.points = newData.points;
           routeData.stops = newData.stops;
+          routeData.buses = newData.buses;
           routeData.createPolyline();
 
           if (finished == countToLoad) {

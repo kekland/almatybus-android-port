@@ -47,7 +47,7 @@ Future<List<BusStop>> getBusStops() async {
 
 Future<BusRouteData> getRouteInfo(BusRoute route) async {
   bool isCached =
-      SharedPreferencesManager.instance.getBool("route.${route.id}.isCached") ??
+      false; //SharedPreferencesManager.instance.getBool("route.${route.id}.isCached") ??
           false;
   List pointsJson;
   List stopsJson;
