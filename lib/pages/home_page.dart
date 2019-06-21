@@ -13,11 +13,11 @@ import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
   static List<Color> routeColors = [
-    Colors.purple,
-    Colors.indigo,
-    Colors.blue,
-    Colors.green,
-    Colors.orange
+    Colors.purple.shade400,
+    Colors.indigo.shade400,
+    Colors.blue.shade400,
+    Colors.green.shade400,
+    Colors.orange.shade400
   ];
   static List<Color> stopColors = [
     Colors.purple.shade600,
@@ -44,6 +44,7 @@ class _HomePageState extends State<HomePage> {
     selectedRoutes = [];
     busesForRoutes = [];
     loadBusDescriptor();
+    busUpdateLoop();
   }
 
   loadBusDescriptor() async {
@@ -166,7 +167,10 @@ class _HomePageState extends State<HomePage> {
       }
     }
 
-    setState(() => selectedRoutesData = newSelectedRoutesData);
+    setState(() {
+      selectedRoutesData = newSelectedRoutesData;
+      busesForRoutes = [];
+    });
 
     if (countToLoad > 0) {
       showLoadingDialog(context: context, color: Colors.blue);
@@ -186,7 +190,7 @@ class _HomePageState extends State<HomePage> {
           if (finished == countToLoad) {
             setState(() {
               selectedRoutesData = newSelectedRoutesData;
-              updateBuses();
+              previousUpdateTime = 0;
             });
             Navigator.of(context).pop();
           }
@@ -235,10 +239,21 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void updateBuses() async {
+  void busUpdateLoop() async {
+    while (true) {
+      await updateBuses();
+      await Future.delayed(Duration(seconds: 7));
+    }
+  }
+
+  int previousUpdateTime = 0;
+  Future updateBuses() async {
     try {
-      var updatedBuses =
-          await api.getBusUpdates(routes: this.selectedRoutesData);
+      var updatedBuses = await api.getBusUpdates(
+        routes: this.selectedRoutesData,
+        previousUpdateTime: previousUpdateTime,
+      );
+      //previousUpdateTime = api.getSeconds();
 
       busesForRoutes = updatedBuses;
       setState(() {});
