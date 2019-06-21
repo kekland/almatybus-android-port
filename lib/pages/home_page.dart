@@ -35,14 +35,14 @@ class _HomePageState extends State<HomePage> {
   GoogleMapController controller;
   List<BusRoute> selectedRoutes;
   List<BusRouteData> selectedRoutesData;
-  List<Bus> buses;
+  List<List<Bus>> busesForRoutes;
   List<BitmapDescriptor> busDescriptors = [];
   @override
   void initState() {
     super.initState();
     selectedRoutesData = [];
     selectedRoutes = [];
-    buses = [];
+    busesForRoutes = [];
     loadBusDescriptor();
   }
 
@@ -96,16 +96,18 @@ class _HomePageState extends State<HomePage> {
   Set<Marker> getMarkers() {
     Set<Marker> markers = {};
 
-    for (Bus bus in buses) {
-      markers.add(
-        Marker(
-          rotation: bus.orientation,
-          position: bus.position,
-          markerId: MarkerId('bus_${bus.id}'),
-          icon: busDescriptors[0],
-          anchor: Offset(0.5, 0.5),
-        ),
-      );
+    for (int i = 0; i < busesForRoutes.length; i++) {
+      for (Bus bus in busesForRoutes[i]) {
+        markers.add(
+          Marker(
+            rotation: bus.orientation,
+            position: bus.position,
+            markerId: MarkerId('bus_${bus.id}_${i}'),
+            icon: busDescriptors[i],
+            anchor: Offset(0.5, 0.5),
+          ),
+        );
+      }
     }
 
     return markers;
@@ -164,7 +166,6 @@ class _HomePageState extends State<HomePage> {
     }
 
     setState(() => selectedRoutesData = newSelectedRoutesData);
-    updateBuses();
 
     if (countToLoad > 0) {
       showLoadingDialog(context: context, color: Colors.blue);
@@ -181,7 +182,10 @@ class _HomePageState extends State<HomePage> {
           routeData.createPolyline();
 
           if (finished == countToLoad) {
-            setState(() => selectedRoutesData = newSelectedRoutesData);
+            setState(() {
+              selectedRoutesData = newSelectedRoutesData;
+              updateBuses();
+            });
             Navigator.of(context).pop();
           }
         });
@@ -232,10 +236,9 @@ class _HomePageState extends State<HomePage> {
   void updateBuses() async {
     try {
       var updatedBuses =
-          await api.getBusUpdates(route: this.selectedRoutes.first);
-      print('skrrrrrr');
-      print(buses.length);
-      buses = updatedBuses;
+          await api.getBusUpdates(routes: this.selectedRoutesData);
+
+      busesForRoutes = updatedBuses;
       setState(() {});
     } catch (e) {
       print(e);

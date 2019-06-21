@@ -47,15 +47,19 @@ Future<List<BusStop>> getBusStops() async {
 
 Future<BusRouteData> getRouteInfo(BusRoute route) async {
   bool isCached =
-      SharedPreferencesManager.instance.getBool("route.${route.id}.isCached") ?? false;
+      SharedPreferencesManager.instance.getBool("route.${route.id}.isCached") ??
+          false;
   List pointsJson;
   List stopsJson;
+  List vehiclesJson;
 
   if (isCached) {
     pointsJson = jsonDecode(SharedPreferencesManager.instance
         .getString("route.${route.id}.points"));
     stopsJson = jsonDecode(
         SharedPreferencesManager.instance.getString("route.${route.id}.stops"));
+    vehiclesJson = jsonDecode(SharedPreferencesManager.instance
+        .getString("route.${route.id}.vehicles"));
   } else {
     var response = await http.get(
       '$baseUrl/Monitoring/GetRouteInfo/${route.id}?_=${getMilliseconds()}',
@@ -66,6 +70,7 @@ Future<BusRouteData> getRouteInfo(BusRoute route) async {
 
     pointsJson = body['Sc']['Crs'][0]['Ps'];
     stopsJson = body['Sc']['Crs'][0]['Ss'];
+    vehiclesJson = body['V'];
 
     SharedPreferencesManager.instance
         .setBool("route.${route.id}.isCached", true);
@@ -73,28 +78,42 @@ Future<BusRouteData> getRouteInfo(BusRoute route) async {
         .setString("route.${route.id}.points", jsonEncode(pointsJson));
     SharedPreferencesManager.instance
         .setString("route.${route.id}.stops", jsonEncode(stopsJson));
+    SharedPreferencesManager.instance
+        .setString("route.${route.id}.vehicles", jsonEncode(vehiclesJson));
   }
 
   List<BusStop> busStops =
       stopsJson.map((stop) => BusStop.fromJson(stop)).toList();
   List<LatLng> points =
       pointsJson.map((point) => LatLng(point['Y'], point['X'])).toList();
+  List<BusData> buses = vehiclesJson.map((a) => BusData.fromJson(a)).toList();
 
-  return BusRouteData.loaded(points: points, stops: busStops, route: route);
+  return BusRouteData.loaded(points: points, stops: busStops, route: route, buses: buses);
 }
 
-Future<List<Bus>> getBusUpdates(
-    {BusRoute route, int previousUpdateTime = 0}) async {
+Future<List<List<Bus>>> getBusUpdates(
+    {List<BusRouteData> routes, int previousUpdateTime = 0}) async {
   try {
+    var routesList = 'X';
+    routes.forEach((route) => routesList += route.route.id.toString() + 'X');
+
     var response = await http.get(
-      '$baseUrl/Monitoring/GetStatusInfo/X${route.id}X/$previousUpdateTime?_=${getMilliseconds()}',
+      '$baseUrl/Monitoring/GetStatusInfo/$routesList/$previousUpdateTime?_=${getMilliseconds()}',
       headers: _getHeaders(),
     );
 
     var body = json.decode(response.body);
-    var buses =
-        (body as List).map((v) => Bus.fromJson(v, route)).cast<Bus>().toList();
-    return buses;
+    List<Bus> allBuses = (body as List).map((d) => Bus.fromJson(d, null)).cast<Bus>().toList();
+    List<List<Bus>> data = [];
+    for(int i = 0; i < routes.length; i++) {
+      data.add([]);
+      allBuses.forEach((bus) {
+        if(routes[i].buses.any((b) => b.id == bus.id)) {
+          data.last.add(bus);
+        }
+      });
+    }
+    return data;
   } catch (e) {
     rethrow;
   }
