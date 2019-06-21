@@ -43,10 +43,16 @@ class _HomePageState extends State<HomePage> {
     selectedRoutesData = [];
     selectedRoutes = [];
     buses = [];
+    loadBusDescriptor();
   }
 
   loadBusDescriptor() async {
-    busDescriptor = await BitmapDescriptor.fromAssetImage(ImageConfiguration(), 'assets/icons/bus_icon.png');
+    busDescriptor = await BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(
+        size: Size(16.0, 16.0),
+      ),
+      'assets/icons/bus_icon_purple.png',
+    );
   }
 
   Set<Polyline> getPolylines() {
@@ -71,12 +77,13 @@ class _HomePageState extends State<HomePage> {
           position: bus.position,
           markerId: MarkerId('bus_${bus.id}'),
           icon: busDescriptor,
+          anchor: Offset(0.5, 0.5),
         ),
       );
     }
 
     return markers;
-  } 
+  }
 
   Set<Circle> getCircles() {
     Set<Circle> circles = {};

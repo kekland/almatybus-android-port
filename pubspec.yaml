@@ -53,6 +53,9 @@ flutter:
    - assets/icons/bus_icon.png
    - assets/icons/2.0x/bus_icon.png
    - assets/icons/3.0x/bus_icon.png
+   - assets/icons/bus_icon_purple.png
+   - assets/icons/2.0x/bus_icon_purple.png
+   - assets/icons/3.0x/bus_icon_purple.png
   # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

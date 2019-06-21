@@ -12,7 +12,7 @@ class Bus {
 
   Bus.fromJson(Map json, BusRoute route) {
     this.id = (json['Id'] as num).toInt();
-    this.orientation = 360.0 -(json['AZ'] as num).toDouble();
+    this.orientation = (json['AZ'] as num).toDouble();
 
     double a = (json['LN'] as num).toDouble();
     double b = (json['LT'] as num).toDouble();
